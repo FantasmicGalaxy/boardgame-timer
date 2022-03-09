@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\ScoreCalculatorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,6 @@ use App\Http\Controllers\MainController;
 */
 
 Route::get('/', [MainController::class, 'Index'])
+    ->name('main');
+Route::get('/score-calculator', [ScoreCalculatorController::class, 'Index'])
     ->name('main');
