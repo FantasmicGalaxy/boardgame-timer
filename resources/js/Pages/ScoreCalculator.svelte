@@ -1,10 +1,11 @@
 <script>
+    import { slide } from "svelte/transition";
     import { SettingsIcon } from "svelte-feather-icons";
 
     let players = [
         {
             name: "e",
-            scores: [7, 5, 2, 7, 4],
+            scores: [],
         },
     ];
 
@@ -17,7 +18,6 @@
     }
 
     let newScore;
-    let playerScore;
 </script>
 
 <main>
@@ -34,27 +34,25 @@
             players = players;
 
             newScore = "";
-
-            setTimeout(() => {
-                playerScore.scroll(0, playerScore.scrollHeight);
-            }, 1);
         }}
     >
         <div class="player-name">Player 1</div>
-        <div class="player-score" bind:this={playerScore}>
-            <ul>
-                {#each players[0].scores as scores, i}
-                    <li>
-                        {addUpScore(players[0], i)}
-                    </li>
-                    <li>
-                        {players[0].scores[i]}
-                    </li>
-                {/each}
-            </ul>
+        <div class="player-score">
             <span class="current-score">
                 {addUpScore(players[0], players[0].scores.length)}
             </span>
+            <ul>
+                {#each players[0].scores as scores, i}
+                    <div transition:slide>
+                        <li>
+                            {addUpScore(players[0], i)}
+                        </li>
+                        <li>
+                            {players[0].scores[i]}
+                        </li>
+                    </div>
+                {/each}
+            </ul>
         </div>
         <input
             type="number"
@@ -102,6 +100,7 @@
         border: var(--border);
         border-radius: var(--border-radius) var(--border-radius) 0 0;
     }
+
     .player-score {
         border-left: var(--border);
         border-right: var(--border);
@@ -109,6 +108,9 @@
 
         max-height: 400px;
         overflow-y: scroll;
+
+        display: flex;
+        flex-direction: column-reverse;
     }
     .player-score ul {
         list-style: none;
