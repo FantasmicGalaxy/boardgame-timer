@@ -1,10 +1,23 @@
 <script>
     import { slide } from "svelte/transition";
-    import { SettingsIcon } from "svelte-feather-icons";
+    import {
+        SettingsIcon,
+        ArrowRightIcon,
+        ArrowLeftIcon,
+        CornerDownLeftIcon,
+    } from "svelte-feather-icons";
 
     let players = [
         {
-            name: "e",
+            name: "Jeremy",
+            scores: [],
+        },
+        {
+            name: "Steven",
+            scores: [],
+        },
+        {
+            name: "Marc",
             scores: [],
         },
     ];
@@ -17,7 +30,16 @@
         return sum;
     }
 
-    let newScore;
+    function nextPlayer() {
+        playerIndex = (playerIndex + 1) % players.length;
+    }
+    function previousPlayer() {
+        playerIndex = (playerIndex - 1 + players.length) % players.length;
+    }
+
+    let playerIndex = 0;
+    $: currentPlayer = players[playerIndex];
+    let scoreInput;
 </script>
 
 <main>
@@ -27,28 +49,31 @@
         class="player"
         on:submit={(e) => {
             e.preventDefault();
-            if (!newScore) {
+            if (!scoreInput) {
                 return;
             }
-            players[0].scores.push(newScore);
+            currentPlayer.scores.push(scoreInput);
             players = players;
 
-            newScore = "";
+            scoreInput = "";
         }}
     >
-        <div class="player-name">Player 1</div>
+        <div class="player-name">
+            <span>Player</span>
+            {currentPlayer.name}
+        </div>
         <div class="player-score">
             <span class="current-score">
-                {addUpScore(players[0], players[0].scores.length)}
+                {addUpScore(currentPlayer, currentPlayer.scores.length)}
             </span>
             <ul>
-                {#each players[0].scores as scores, i}
+                {#each currentPlayer.scores as scores, i}
                     <div transition:slide>
                         <li>
-                            {addUpScore(players[0], i)}
+                            {addUpScore(currentPlayer, i)}
                         </li>
                         <li>
-                            {players[0].scores[i]}
+                            {currentPlayer.scores[i]}
                         </li>
                     </div>
                 {/each}
@@ -59,9 +84,23 @@
             name="new-score"
             id="new-score"
             placeholder="Enter score"
-            bind:value={newScore}
+            bind:value={scoreInput}
         />
     </form>
+    <div class="controls">
+        <div>
+            <span>Previous Player</span>
+            <button class="icon-button" on:click={nextPlayer}>
+                <ArrowLeftIcon size="64" />
+            </button>
+        </div>
+        <div>
+            <span>Next Player</span>
+            <button class="icon-button" on:click={previousPlayer}>
+                <ArrowRightIcon size="64" />
+            </button>
+        </div>
+    </div>
 </main>
 
 <style>
@@ -73,14 +112,17 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
         margin-bottom: 2rem;
     }
     h1 {
         display: flex;
         flex-direction: row;
         align-items: center;
+        text-align: center;
         gap: 0.5rem;
+        margin: 1rem 0 0;
+        font-size: 1.75rem;
     }
     h1 button {
         display: inline;
@@ -90,15 +132,29 @@
         padding: 0.5rem;
     }
 
+    .icon-button {
+        padding: 0.25rem;
+        border-radius: var(--border-radius);
+    }
+
     .player {
-        width: 300px;
+        max-width: 300px;
         text-align: center;
+        margin: 0 1rem;
     }
     .player-name {
-        font-size: 3rem;
-        padding: 0 1rem;
+        font-size: 2.25rem;
+        padding: 0.5rem;
         border: var(--border);
         border-radius: var(--border-radius) var(--border-radius) 0 0;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+    .player-name span {
+        color: var(--color-text-muted);
+        font-size: 1.25rem;
+        /* font-weight: bold; */
     }
 
     .player-score {
@@ -153,5 +209,38 @@
         border-radius: 0 0 var(--border-radius) var(--border-radius);
         font-size: 2rem;
         text-align: center;
+    }
+
+    .controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .controls div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .controls div span {
+        text-align: center;
+        color: var(--color-text-muted);
+        max-width: 74px;
+        line-height: 1.2;
+    }
+
+    @media (min-width: 400px) {
+        h1 {
+            font-size: 2.25rem;
+        }
+        .player-name {
+            font-size: 3rem;
+        }
+        .player-name span {
+            font-size: 1.5rem;
+        }
     }
 </style>
