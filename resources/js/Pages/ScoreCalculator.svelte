@@ -72,8 +72,8 @@
                         <li>
                             {addUpScore(currentPlayer, i)}
                         </li>
-                        <li>
-                            {currentPlayer.scores[i]}
+                        <li data-sign={currentPlayer.scores[i] < 0 ? "-" : "+"}>
+                            {Math.abs(currentPlayer.scores[i])}
                         </li>
                     </div>
                 {/each}
@@ -154,7 +154,6 @@
     .player-name span {
         color: var(--color-text-muted);
         font-size: 1.25rem;
-        /* font-weight: bold; */
     }
 
     .player-score {
@@ -180,22 +179,27 @@
         margin-bottom: 0;
         font-size: 1.5rem;
         position: relative;
-        padding-left: 1.2ch;
-        width: 5rem;
+        padding-left: 1.5ch;
+        width: auto;
+        min-width: 5rem;
     }
     .player-score ul li:nth-child(2n - 1) {
         color: var(--color-text-muted);
+        padding-left: 0;
     }
     .player-score ul li:nth-child(2n) {
         border-bottom: var(--border);
     }
     .player-score ul li:nth-child(2n)::before {
-        content: "+";
+        content: attr(data-sign);
         color: var(--color-text-muted);
         position: absolute;
         /* for alignment */
         left: 4px;
+        right: calc(100% - 1.5ch + 4px);
         top: -1px;
+
+        text-align: center;
     }
     .player-score .current-score {
         font-size: 2.5rem;
