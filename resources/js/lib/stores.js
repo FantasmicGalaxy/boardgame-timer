@@ -1,28 +1,33 @@
 import { writable } from 'svelte/store';
 
-const defaultTurnLength = 300;
-const defaultPlayers = [
-  { id: Date.now(), name: '' },
-  { id: Date.now() + 1, name: '' }
-];
+export const turnLength = createLocalStorageStore('turnLength', 300);
+export const players = createLocalStorageStore('players', [
+  { id: Date.now(), name: 'Jack' },
+  { id: Date.now() + 1, name: 'Jill' }
+]);
 
-const initialTurnLength = window
-  ? +window.localStorage.getItem('turnLength') ?? defaultTurnLength
-  : defaultTurnLength;
-const initialPlayers = window
-  ? JSON.parse(window.localStorage.getItem('players')) ?? defaultPlayers
-  : defaultPlayers;
+function createLocalStorageStore(key, defaultValue) {
+  let initialValue;
+  try {
+    initialValue = window ?
+      JSON.parse(window.localStorage.getItem(key)) ?? defaultValue
+      : defaultValue;
+  } catch (error) {
+    console.log('Malformed data found in localStorage, resetting to default');
 
-export const turnLength = writable(initialTurnLength);
-export const players = writable(initialPlayers);
-
-turnLength.subscribe((value) => {
-  if (window) {
-    window.localStorage.setItem('turnLength', value.toString());
+    initialValue = defaultValue;
+    if (window)
+      window.localStorage.setItem(key, JSON.stringify(defaultValue));
   }
-});
-players.subscribe((value) => {
-  if (window) {
-    window.localStorage.setItem('players', JSON.stringify(value));
-  }
-});
+
+
+  const store = writable(initialValue);
+
+  store.subscribe((value) => {
+    if (window) {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    }
+  });
+
+  return store;
+}
