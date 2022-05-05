@@ -5,6 +5,7 @@ export const players = createLocalStorageStore('players', [
   { id: Date.now(), name: 'Jack' },
   { id: Date.now() + 1, name: 'Jill' }
 ]);
+export const muteAlarm = createLocalStorageStore('muteAlarm', false);
 
 function createLocalStorageStore(key, defaultValue) {
   let initialValue;

@@ -28,13 +28,18 @@
         { id: Date.now(), name: "" },
         { id: Date.now() + 1, name: "" },
     ];
+    export let muteAlarm = false;
 
     export let visible = false;
 
     function closeMenu() {
         visible = false;
         // multiply by 60e3 to convert minutes to milliseconds
-        dispatch("update-options", { players, turnLength: turnLength * 60e3 });
+        dispatch("update-options", {
+            players,
+            turnLength: turnLength * 60e3,
+            muteAlarm,
+        });
     }
     function clampTurnLength(e) {
         e.target.value = Math.max(0, e.target.value);
@@ -50,7 +55,7 @@
 
         <h1>Configure Timer</h1>
 
-        <div class="turn-length">
+        <div class="input">
             <label for="time-per-turn">Turn length (minutes)</label>
             <input
                 type="number"
@@ -58,6 +63,11 @@
                 bind:value={turnLength}
                 on:blur={clampTurnLength}
             />
+        </div>
+
+        <div class="input">
+            <label for="mute-alarm">Mute Alarm?</label>
+            <input type="checkbox" id="mute-alarm" bind:checked={muteAlarm} />
         </div>
 
         <hr />
@@ -149,10 +159,10 @@
         border-top: 4px solid var(--color-secondary);
     }
 
-    .turn-length {
+    .input {
         margin-bottom: 0.5rem;
     }
-    .turn-length label {
+    .input label {
         margin: 0 0 0.25rem;
     }
 

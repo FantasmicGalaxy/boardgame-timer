@@ -9,7 +9,7 @@
         SkipForwardIcon,
     } from "svelte-feather-icons";
     import TimerOptions from "../components/timer-options.svelte";
-    import { turnLength, players } from "../lib/stores";
+    import { turnLength, players, muteAlarm } from "../lib/stores";
 
     let timer = {
         time: $turnLength,
@@ -62,10 +62,16 @@
             }
         },
         reset() {
+            timer.ended = false;
+            timer.stopBeeping();
+
             timer.time = $turnLength;
             this.stop();
         },
         startBeeping() {
+            if ($muteAlarm) {
+                return;
+            }
             timer.beepSound.loop = true;
             timer.beepSound.play();
         },
@@ -89,6 +95,7 @@
     function updateSettings(e) {
         $turnLength = e.detail.turnLength;
         $players = e.detail.players;
+        $muteAlarm = e.detail.muteAlarm;
         timer.reset();
     }
 
@@ -108,6 +115,7 @@
         on:update-options={updateSettings}
         turnLength={$turnLength / 60e3}
         players={$players}
+        muteAlarm={$muteAlarm}
     />
 
     {#key currentPlayer}
