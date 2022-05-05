@@ -96,6 +96,11 @@
         $turnLength = e.detail.turnLength;
         $players = e.detail.players;
         $muteAlarm = e.detail.muteAlarm;
+
+        if ($players.length - 1 < currentPlayer) {
+            currentPlayer = 0;
+        }
+
         timer.reset();
     }
 
