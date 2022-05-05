@@ -3,6 +3,7 @@
     import PieProgressBar from "../components/pie-progress-bar.svelte";
     import {
         PauseIcon,
+        SquareIcon,
         PlayIcon,
         SettingsIcon,
         SkipForwardIcon,
@@ -14,6 +15,8 @@
         time: $turnLength,
         ticking: false,
         timerReference: null,
+        ended: false,
+        beepSound: new Audio("/audio/timer-beep.mp3"),
         start(inputTime = 0) {
             if (timer.time <= 0) {
                 timer.time = $turnLength;
@@ -34,6 +37,9 @@
                 prev = Date.now();
 
                 if (timer.time <= 0) {
+                    timer.ended = true;
+                    timer.startBeeping();
+
                     timer.time = 0;
                     timer.stop();
                 }
@@ -44,8 +50,13 @@
             clearInterval(this.timerReference);
         },
         toggle() {
-            if (this.ticking) {
+            if (timer.ticking) {
                 this.stop();
+            } else if (timer.ended) {
+                timer.ended = false;
+                timer.stopBeeping();
+
+                this.start();
             } else {
                 this.start();
             }
@@ -53,6 +64,14 @@
         reset() {
             timer.time = $turnLength;
             this.stop();
+        },
+        startBeeping() {
+            timer.beepSound.loop = true;
+            timer.beepSound.play();
+        },
+        stopBeeping() {
+            timer.beepSound.pause();
+            timer.beepSound.currentTime = 0;
         },
     };
 
@@ -110,8 +129,9 @@
         width="400px"
         fontSize="100px"
         borderThickness="16px"
-        color="var(--color-highlight)"
+        color={!timer.ended ? "var(--color-highlight)" : "red"}
         emptyColor="var(--color-secondary)"
+        flashing={timer.ended}
     >
         <span>{minutes}:{seconds}</span>
     </PieProgressBar>
@@ -133,6 +153,8 @@
         >
             {#if timer.ticking}
                 <PauseIcon size="64" />
+            {:else if timer.ended}
+                <SquareIcon size="64" />
             {:else}
                 <PlayIcon size="64" />
             {/if}
