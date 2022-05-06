@@ -9,6 +9,7 @@
         SkipForwardIcon,
     } from "svelte-feather-icons";
     import TimerOptions from "../components/timer-options.svelte";
+    import Modal from "../components/modal.svelte";
     import { turnLength, players, muteAlarm } from "../lib/stores";
 
     let timer = {
@@ -115,6 +116,8 @@
 </script>
 
 <main>
+    <Modal title="Timer Settings">ADSFASDF</Modal>
+
     <TimerOptions
         bind:visible={optionsVisible}
         on:update-options={updateSettings}
@@ -179,9 +182,9 @@
 
 <style>
     main {
-        max-width: 700px;
+        max-width: 500px;
         margin: 0 auto;
-        position: relative;
+        padding: 2rem 0;
 
         display: flex;
         flex-direction: column;
@@ -192,7 +195,7 @@
     header {
         text-align: center;
         line-height: 1;
-        margin: 2rem 0 1rem;
+        margin: 0 0 1rem;
     }
     header h1 {
         font-size: 3rem;
