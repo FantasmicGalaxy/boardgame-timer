@@ -7,7 +7,7 @@ export const players = createLocalStorageStore('players', [
 ]);
 export const muteAlarm = createLocalStorageStore('muteAlarm', false);
 
-function createLocalStorageStore(key, defaultValue) {
+export function createLocalStorageStore(key, defaultValue) {
   let initialValue;
   try {
     initialValue = window ?

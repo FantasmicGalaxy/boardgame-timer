@@ -10,6 +10,7 @@
     } from "svelte-feather-icons";
     import TimerOptions from "../components/timer-options.svelte";
     import Modal from "../components/modal.svelte";
+    import Form from "../components/form.svelte";
     import { turnLength, players, muteAlarm } from "../lib/stores";
 
     let timer = {
@@ -94,9 +95,12 @@
     }
 
     function updateSettings(e) {
-        $turnLength = e.detail.turnLength;
-        $players = e.detail.players;
-        $muteAlarm = e.detail.muteAlarm;
+        console.log(e.detail);
+        $turnLength = e.detail.turnLength ?? $turnLength;
+        $players = e.detail.players ?? $players;
+        $muteAlarm = e.detail.muteAlarm ?? $muteAlarm;
+
+        console.log($muteAlarm);
 
         if ($players.length - 1 < currentPlayer) {
             currentPlayer = 0;
@@ -116,7 +120,36 @@
 </script>
 
 <main>
-    <Modal title="Timer Settings">ADSFASDF</Modal>
+    <Modal title="Timer Settings">
+        <Form on:save={updateSettings}>
+            <div class="input">
+                <label for="turnLength">Turn length (minutes)</label>
+                <input
+                    type="number"
+                    name="turnLength"
+                    id="turnLength"
+                    value={$turnLength}
+                    on:blur={(e) => {
+                        e.detail = Math.abs(e.detail);
+                    }}
+                />
+            </div>
+
+            <div class="input">
+                <label for="muteAlarm">Mute Alarm?</label>
+                <input type="hidden" name="muteAlarm" value={false} />
+                <input
+                    type="checkbox"
+                    name="muteAlarm"
+                    id="muteAlarm"
+                    checked={$muteAlarm == "false" ? null : true}
+                    value={true}
+                />
+            </div>
+
+            <button type="submit">Submit</button>
+        </Form>
+    </Modal>
 
     <TimerOptions
         bind:visible={optionsVisible}

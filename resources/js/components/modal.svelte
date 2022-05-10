@@ -49,6 +49,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
 
         padding: 0.5rem 0.5rem 0.5rem 1rem;
@@ -58,6 +59,7 @@
     }
     .modal-header h2 {
         margin: 0;
+        margin-left: auto;
         align-self: center;
         line-height: 1.2;
     }
@@ -66,6 +68,7 @@
         border-color: transparent;
         border-radius: var(--border-radius);
         padding: 0.125rem;
+        margin-left: auto;
     }
     .modal-header button:hover {
         border-color: var(--color-highlight);
