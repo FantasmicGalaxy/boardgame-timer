@@ -3,10 +3,10 @@
 
     const dispatch = createEventDispatcher();
 
-    function handleSubmit(event) {
-        event.preventDefault();
+    let formRef;
 
-        const fd = new FormData(this);
+    function save() {
+        const fd = new FormData(formRef);
         const data = {};
         for (const [key, value] of fd) {
             data[key] = value;
@@ -14,9 +14,19 @@
 
         dispatch("save", data);
     }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+
+        save();
+    }
+
+    export const form = {
+        save,
+    };
 </script>
 
-<form on:submit={handleSubmit}>
+<form on:submit={handleSubmit} bind:this={formRef}>
     <slot />
 </form>
 

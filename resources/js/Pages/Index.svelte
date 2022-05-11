@@ -8,7 +8,7 @@
         SettingsIcon,
         SkipForwardIcon,
     } from "svelte-feather-icons";
-    import TimerOptions from "../components/timer-options.svelte";
+    import PlayerSelection from "../components/player-selection.svelte";
     import Modal from "../components/modal.svelte";
     import Form from "../components/form.svelte";
     import { turnLength, players, muteAlarm } from "../lib/stores";
@@ -97,7 +97,7 @@
     function updateSettings(e) {
         console.log(e.detail);
         $turnLength = e.detail.turnLength ?? $turnLength;
-        $players = e.detail.players ?? $players;
+        $players = JSON.parse(e.detail.players) ?? $players;
         $muteAlarm = e.detail.muteAlarm ?? $muteAlarm;
 
         console.log($muteAlarm);
@@ -112,6 +112,9 @@
     let currentPlayer = 0;
     let optionsVisible = false;
 
+    let settingsModal;
+    let settingsForm;
+
     $: minutes = Math.floor(timer.time / 1000 / 60);
     $: seconds =
         Math.round(timer.time / 1000 - minutes * 60) < 10
@@ -120,8 +123,14 @@
 </script>
 
 <main>
-    <Modal title="Timer Settings">
-        <Form on:save={updateSettings}>
+    <Modal
+        title="Timer Settings"
+        bind:modal={settingsModal}
+        on:hide={() => {
+            settingsForm.save();
+        }}
+    >
+        <Form on:save={updateSettings} bind:form={settingsForm}>
             <div class="input">
                 <label for="turnLength">Turn length (minutes)</label>
                 <input
@@ -147,17 +156,11 @@
                 />
             </div>
 
+            <PlayerSelection players={$players} />
+
             <button type="submit">Submit</button>
         </Form>
     </Modal>
-
-    <TimerOptions
-        bind:visible={optionsVisible}
-        on:update-options={updateSettings}
-        turnLength={$turnLength / 60e3}
-        players={$players}
-        muteAlarm={$muteAlarm}
-    />
 
     {#key currentPlayer}
         <header in:fly={{ y: -25 }}>
@@ -188,7 +191,7 @@
     <menu>
         <button
             on:click={() => {
-                optionsVisible = !optionsVisible;
+                settingsModal.show();
             }}
         >
             <SettingsIcon size="60" />

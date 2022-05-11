@@ -1,8 +1,31 @@
 <script>
+    import { createEventDispatcher } from "svelte";
+    import { writable } from "svelte/store";
     import { XIcon } from "svelte-feather-icons";
 
-    export let open = true;
+    const dispatch = createEventDispatcher();
+
+    let previousState = false;
+    export let open = false;
     export let title = "";
+
+    export const modal = {
+        show() {
+            open = true;
+        },
+        hide() {
+            open = false;
+        },
+    };
+
+    $: {
+        if (open && !previousState) {
+            dispatch("show", null);
+        } else if (!open && previousState) {
+            dispatch("hide", null);
+        }
+        previousState = open;
+    }
 </script>
 
 {#if open}
