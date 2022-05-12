@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    import { writable } from "svelte/store";
+    import { fly, fade } from "svelte/transition";
     import { XIcon } from "svelte-feather-icons";
 
     const dispatch = createEventDispatcher();
@@ -29,8 +29,13 @@
 </script>
 
 {#if open}
-    <div class="background">
-        <div class="modal">
+    <div
+        class="background"
+        transition:fade={{ duration: 200 }}
+        on:click={modal.hide}
+    />
+    <div class="modal-container">
+        <div class="modal" transition:fly={{ y: 75 }}>
             <div class="modal-header">
                 <h2>{title}</h2>
                 <button
@@ -55,9 +60,19 @@
         bottom: 0;
         right: 0;
         left: 0;
-        z-index: 2;
+        z-index: 1;
 
         background-color: rgba(0, 0, 0, 0.7);
+    }
+    .modal-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 1;
+
+        pointer-events: none;
 
         display: flex;
         align-items: center;
@@ -67,6 +82,7 @@
         background-color: var(--color-secondary);
         border-radius: var(--border-radius);
         min-width: 200px;
+        pointer-events: auto;
     }
     .modal-header {
         display: flex;
@@ -89,11 +105,12 @@
     .modal-header button {
         color: var(--color-text-muted);
         border-color: transparent;
-        border-radius: var(--border-radius);
+        border-radius: calc(var(--border-radius) / 2);
         padding: 0.125rem;
         margin-left: auto;
     }
-    .modal-header button:hover {
+    .modal-header button:hover,
+    .modal-header button:focus {
         border-color: var(--color-highlight);
     }
 

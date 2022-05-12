@@ -49,6 +49,7 @@ input[type="button"] {
     padding: 0 30px;
     color: var(--color-text);
     text-align: center;
+    font-family: inherit;
     font-weight: 600;
     line-height: 36px;
     text-decoration: none;
@@ -90,6 +91,7 @@ select {
     border: var(--border);
     box-shadow: none;
     box-sizing: border-box;
+    font-family: inherit;
 }
 /* Removes awkward default styles on some inputs for iOS */
 input[type="email"],

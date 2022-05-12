@@ -95,12 +95,9 @@
     }
 
     function updateSettings(e) {
-        console.log(e.detail);
         $turnLength = e.detail.turnLength ?? $turnLength;
         $players = JSON.parse(e.detail.players) ?? $players;
         $muteAlarm = e.detail.muteAlarm ?? $muteAlarm;
-
-        console.log($muteAlarm);
 
         if ($players.length - 1 < currentPlayer) {
             currentPlayer = 0;
@@ -110,7 +107,6 @@
     }
 
     let currentPlayer = 0;
-    let optionsVisible = false;
 
     let settingsModal;
     let settingsForm;
@@ -131,34 +127,35 @@
         }}
     >
         <Form on:save={updateSettings} bind:form={settingsForm}>
-            <div class="input">
-                <label for="turnLength">Turn length (minutes)</label>
-                <input
-                    type="number"
-                    name="turnLength"
-                    id="turnLength"
-                    value={$turnLength}
-                    on:blur={(e) => {
-                        e.detail = Math.abs(e.detail);
-                    }}
-                />
-            </div>
+            <div class="list">
+                <div class="input">
+                    <label for="turnLength">Turn length (minutes)</label>
 
-            <div class="input">
-                <label for="muteAlarm">Mute Alarm?</label>
-                <input type="hidden" name="muteAlarm" value={false} />
-                <input
-                    type="checkbox"
-                    name="muteAlarm"
-                    id="muteAlarm"
-                    checked={$muteAlarm == "false" ? null : true}
-                    value={true}
-                />
+                    <input
+                        type="number"
+                        name="turnLength"
+                        id="turnLength"
+                        value={$turnLength}
+                        on:blur={(e) => {
+                            e.detail = Math.abs(e.detail);
+                        }}
+                    />
+                </div>
+
+                <div class="checkbox">
+                    <label for="muteAlarm">Mute Alarm?</label>
+                    <input type="hidden" name="muteAlarm" value={false} />
+                    <input
+                        type="checkbox"
+                        name="muteAlarm"
+                        id="muteAlarm"
+                        checked={$muteAlarm == "false" ? null : true}
+                        value={true}
+                    />
+                </div>
             </div>
 
             <PlayerSelection players={$players} />
-
-            <button type="submit">Submit</button>
         </Form>
     </Modal>
 
@@ -266,5 +263,99 @@
         padding: 0.25rem;
         line-height: 1;
         border: none;
+    }
+
+    .list {
+        display: flex;
+        flex-direction: column;
+        border-radius: calc(var(--border-radius) / 2);
+        border: var(--border);
+        margin-bottom: 1rem;
+        overflow: auto;
+    }
+    .list > *:not(:last-child) {
+        border-bottom: var(--border);
+    }
+
+    .input,
+    .checkbox {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        padding-left: 1rem;
+        min-height: 3rem;
+    }
+    .input input,
+    .checkbox input[type="checkbox"] {
+        margin-left: auto;
+    }
+    .input input {
+        height: calc(3rem - 1px);
+        width: 6rem;
+        font-size: 1.2rem;
+        border: none;
+        background-color: var(--color-secondary);
+        text-align: center;
+
+        position: relative;
+    }
+    .checkbox input[type="checkbox"] {
+        margin-right: 1rem;
+    }
+    .input label,
+    .checkbox label {
+        margin: 0.5rem 0;
+    }
+
+    input[type="checkbox"] {
+        /* Add if not using autoprefixer */
+        -webkit-appearance: none;
+        /* Remove most all native input styles */
+        appearance: none;
+        /* For iOS < 15 */
+        background-color: var(--form-background);
+        /* Not removed via appearance */
+        margin: 0;
+
+        font: inherit;
+        color: currentColor;
+        width: 1.15em;
+        height: 1.15em;
+        border: 0.15em solid currentColor;
+        border-radius: 0.15em;
+        transform: translateY(-0.075em);
+
+        display: grid;
+        place-content: center;
+    }
+
+    input[type="checkbox"]::before {
+        content: "";
+        width: 0.65em;
+        height: 0.65em;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        transform: scale(0);
+        transform-origin: bottom left;
+        transition: 120ms transform ease-in-out;
+        box-shadow: inset 1em 1em var(--form-control-color);
+        /* Windows High Contrast Mode */
+        background-color: CanvasText;
+    }
+
+    input[type="checkbox"]:checked::before {
+        transform: scale(1);
+    }
+
+    input[type="checkbox"]:focus {
+        outline: max(2px, 0.15em) solid currentColor;
+        outline-offset: max(2px, 0.15em);
+    }
+
+    input[type="checkbox"]:disabled {
+        --form-control-color: var(--form-control-disabled);
+
+        color: var(--form-control-disabled);
+        cursor: not-allowed;
     }
 </style>
